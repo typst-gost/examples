@@ -100,9 +100,13 @@ jobs:
     if: needs.discover_changed.outputs.folders != '[]' && needs.discover_changed.outputs.folders != ''
     permissions:
       contents: write
+    concurrency:
+      group: preview-branch-${{ matrix.folder }}
+      cancel-in-progress: false
     strategy:
       matrix:
         folder: ${{ fromJSON(needs.discover_changed.outputs.folders) }}
+      max-parallel: 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
